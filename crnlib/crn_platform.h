@@ -19,9 +19,15 @@ void crnlib_fail(const char* pExp, const char* pFile, unsigned line);
 const bool c_crnlib_big_endian_platform = !c_crnlib_little_endian_platform;
 
 #ifdef __GNUC__
+#if __linux__
    #define crn_fopen(pDstFile, f, m) *(pDstFile) = fopen64(f, m)
    #define crn_fseek fseeko64
    #define crn_ftell ftello64
+#else
+   #define crn_fopen(pDstFile, f, m) *(pDstFile) = fopen(f, m)
+   #define crn_fseek fseeko
+   #define crn_ftell ftello
+#endif
 #elif defined( _MSC_VER )
    #define crn_fopen(pDstFile, f, m) fopen_s(pDstFile, f, m)
    #define crn_fseek _fseeki64
@@ -48,7 +54,7 @@ const bool c_crnlib_big_endian_platform = !c_crnlib_little_endian_platform;
    #define CRNLIB_NOINLINE __attribute__((noinline))
 #elif defined(_MSC_VER)
    #define CRNLIB_ALIGNED(x) __declspec(align(x))
-   #define CRNLIB_NOINLINE __declspec(noinline) 
+   #define CRNLIB_NOINLINE __declspec(noinline)
 #else
    #define CRNLIB_ALIGNED(x)
    #define CRNLIB_NOINLINE

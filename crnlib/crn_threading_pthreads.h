@@ -14,6 +14,10 @@
 #include <semaphore.h>
 #include <unistd.h>
 
+#ifdef __APPLE__
+#include "spinlock_osx.h"
+#endif
+
 namespace crnlib
 {
    // g_number_of_processors defaults to 1. Will be higher on multicore machines.

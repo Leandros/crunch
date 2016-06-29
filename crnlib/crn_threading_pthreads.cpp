@@ -12,7 +12,7 @@
 #endif
 
 #ifdef __GNUC__
-#include <sys/sysinfo.h>
+/* #include <sys/sysinfo.h> */
 #endif
 
 #ifdef WIN32
