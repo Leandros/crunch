@@ -170,24 +170,24 @@ namespace crnlib
 #endif
 
       // Assumes x has been read from memory as a little endian value, converts to native endianness for manipulation.
-      CRNLIB_FORCE_INLINE uint16 swap_le16_to_native(uint16 x) { return c_crnlib_little_endian_platform ? x : swap16(x); }
-      CRNLIB_FORCE_INLINE uint32 swap_le32_to_native(uint32 x) { return c_crnlib_little_endian_platform ? x : swap32(x); }
-      CRNLIB_FORCE_INLINE uint64 swap_le64_to_native(uint64 x) { return c_crnlib_little_endian_platform ? x : swap64(x); }
+      static CRNLIB_FORCE_INLINE uint16 swap_le16_to_native(uint16 x) { return c_crnlib_little_endian_platform ? x : swap16(x); }
+      static CRNLIB_FORCE_INLINE uint32 swap_le32_to_native(uint32 x) { return c_crnlib_little_endian_platform ? x : swap32(x); }
+      static CRNLIB_FORCE_INLINE uint64 swap_le64_to_native(uint64 x) { return c_crnlib_little_endian_platform ? x : swap64(x); }
 
-      // Assumes x has been read from memory as a big endian value, converts to native endianness for manipulation.
-      CRNLIB_FORCE_INLINE uint16 swap_be16_to_native(uint16 x) { return c_crnlib_big_endian_platform ? x : swap16(x); }
-      CRNLIB_FORCE_INLINE uint32 swap_be32_to_native(uint32 x) { return c_crnlib_big_endian_platform ? x : swap32(x); }
-      CRNLIB_FORCE_INLINE uint64 swap_be64_to_native(uint64 x) { return c_crnlib_big_endian_platform ? x : swap64(x); }
+      static // Assumes x has been read from memory as a big endian value, converts to native endianness for manipulation.
+      static CRNLIB_FORCE_INLINE uint16 swap_be16_to_native(uint16 x) { return c_crnlib_big_endian_platform ? x : swap16(x); }
+      static CRNLIB_FORCE_INLINE uint32 swap_be32_to_native(uint32 x) { return c_crnlib_big_endian_platform ? x : swap32(x); }
+      static CRNLIB_FORCE_INLINE uint64 swap_be64_to_native(uint64 x) { return c_crnlib_big_endian_platform ? x : swap64(x); }
 
-      CRNLIB_FORCE_INLINE uint32 read_le32(const void* p) { return swap_le32_to_native(*static_cast<const uint32*>(p)); }
-      CRNLIB_FORCE_INLINE void   write_le32(void* p, uint32 x) { *static_cast<uint32*>(p) = swap_le32_to_native(x); }
-      CRNLIB_FORCE_INLINE uint64 read_le64(const void* p) { return swap_le64_to_native(*static_cast<const uint64*>(p)); }
-      CRNLIB_FORCE_INLINE void   write_le64(void* p, uint64 x) { *static_cast<uint64*>(p) = swap_le64_to_native(x); }
+      static CRNLIB_FORCE_INLINE uint32 read_le32(const void* p) { return swap_le32_to_native(*static_cast<const uint32*>(p)); }
+      static CRNLIB_FORCE_INLINE void   write_le32(void* p, uint32 x) { *static_cast<uint32*>(p) = swap_le32_to_native(x); }
+      static CRNLIB_FORCE_INLINE uint64 read_le64(const void* p) { return swap_le64_to_native(*static_cast<const uint64*>(p)); }
+      static CRNLIB_FORCE_INLINE void   write_le64(void* p, uint64 x) { *static_cast<uint64*>(p) = swap_le64_to_native(x); }
 
-      CRNLIB_FORCE_INLINE uint32 read_be32(const void* p) { return swap_be32_to_native(*static_cast<const uint32*>(p)); }
-      CRNLIB_FORCE_INLINE void   write_be32(void* p, uint32 x) { *static_cast<uint32*>(p) = swap_be32_to_native(x); }
-      CRNLIB_FORCE_INLINE uint64 read_be64(const void* p) { return swap_be64_to_native(*static_cast<const uint64*>(p)); }
-      CRNLIB_FORCE_INLINE void   write_be64(void* p, uint64 x) { *static_cast<uint64*>(p) = swap_be64_to_native(x); }
+      static CRNLIB_FORCE_INLINE uint32 read_be32(const void* p) { return swap_be32_to_native(*static_cast<const uint32*>(p)); }
+      static CRNLIB_FORCE_INLINE void   write_be32(void* p, uint32 x) { *static_cast<uint32*>(p) = swap_be32_to_native(x); }
+      static CRNLIB_FORCE_INLINE uint64 read_be64(const void* p) { return swap_be64_to_native(*static_cast<const uint64*>(p)); }
+      static CRNLIB_FORCE_INLINE void   write_be64(void* p, uint64 x) { *static_cast<uint64*>(p) = swap_be64_to_native(x); }
 
       inline void endian_swap_mem16(uint16* p, uint n) { while (n--) { *p = swap16(*p); ++p; } }
       inline void endian_swap_mem32(uint32* p, uint n) { while (n--) { *p = swap32(*p); ++p; } }

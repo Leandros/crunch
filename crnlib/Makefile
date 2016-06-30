@@ -3,9 +3,10 @@ LD				:= clang++
 
 DEBUG			:= -g
 CFLAGS_ALL		:= $(CFLAGS) $(DEBUG) -O3 -Wall -Wno-unused-value -Wno-unused
+CFLAGS_ALL		+= -Wno-absolute-value -Wno-self-assign -Wno-duplicate-decl-specifier
 CFLAGS_ALL		+= -fomit-frame-pointer -ffast-math -fno-math-errno -fno-strict-aliasing
 CFLAGS_ALL		+= -m32
-LDFLAGS_ALL		:= $(LDFLAGS) $(DEBUG) -lpthread
+LDFLAGS_ALL		:= $(LDFLAGS) $(DEBUG) -lpthread -m32
 
 BIN				:= crunch
 

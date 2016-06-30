@@ -1,0 +1,13 @@
+# Basics
+*.o
+*.a
+*.dylib
+*.so
+*.dll
+*.lib
+
+# executable
+crunch
+
+# ctags
+tags
