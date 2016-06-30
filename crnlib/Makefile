@@ -9,6 +9,7 @@ CFLAGS_ALL		+= -fomit-frame-pointer -ffast-math -fno-math-errno -fno-strict-alia
 CFLAGS_ALL		+=
 LDFLAGS_ALL		:= $(LDFLAGS) $(DEBUG) -lpthread
 
+PREFIX			?= /usr/local
 BIN				:= crunch
 LIB				:= libcrunch.a
 
@@ -88,6 +89,11 @@ OBJECTS = \
   lzma_LzmaEnc.o \
   lzma_LzmaLib.o
 
+HEADERS = \
+	../inc/crn_decomp.h \
+	../inc/crnlib.h \
+	../inc/dds_defs.h
+
 .PHONY: all
 all: crunch
 
@@ -109,6 +115,13 @@ $(LIB): $(OBJECTS)
 $(BIN): $(LIB) crunch.o corpus_gen.o corpus_test.o
 	$(CXX) $(OBJECTS) $(LIB) crunch.o corpus_gen.o corpus_test.o -o $(BIN) $(LDFLAGS_ALL)
 
+install: $(LIB) $(BIN)
+	install -d $(PREFIX)/bin
+	install -d $(PREFIX)/lib
+	install -d $(PREFIX)/include
+	install -m 775 $(BIN) $(PREFIX)/bin
+	install -m 664 $(LIB) $(PREFIX)/lib
+	install -m 664 $(HEADERS) $(PREFIX)/include
 
 .PHONY: clean
 clean:
