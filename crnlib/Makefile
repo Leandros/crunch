@@ -1,14 +1,16 @@
 CXX				:= clang++
 LD				:= clang++
+AR				:= ar rcs
 
 DEBUG			:= -g
-CFLAGS_ALL		:= $(CFLAGS) $(DEBUG) -O3 -Wall -Wno-unused-value -Wno-unused
+CFLAGS_ALL		:= $(CFLAGS) $(DEBUG) -O3 -fPIC -Wall -Wno-unused-value -Wno-unused
 CFLAGS_ALL		+= -Wno-absolute-value -Wno-self-assign -Wno-duplicate-decl-specifier
 CFLAGS_ALL		+= -fomit-frame-pointer -ffast-math -fno-math-errno -fno-strict-aliasing
-CFLAGS_ALL		+= -m32
-LDFLAGS_ALL		:= $(LDFLAGS) $(DEBUG) -lpthread -m32
+CFLAGS_ALL		+=
+LDFLAGS_ALL		:= $(LDFLAGS) $(DEBUG) -lpthread
 
 BIN				:= crunch
+LIB				:= libcrunch.a
 
 OBJECTS = \
   crn_arealist.o \
@@ -86,6 +88,7 @@ OBJECTS = \
   lzma_LzmaEnc.o \
   lzma_LzmaLib.o
 
+.PHONY: all
 all: crunch
 
 %.o: %.cpp
@@ -100,10 +103,14 @@ corpus_gen.o: ../crunch/corpus_gen.cpp
 corpus_test.o: ../crunch/corpus_test.cpp
 	$(CXX) $< -o $@ -c -I../inc -I../crnlib $(CFLAGS_ALL)
 
-crunch: $(OBJECTS) crunch.o corpus_gen.o corpus_test.o
-	$(CXX) $(OBJECTS) crunch.o corpus_gen.o corpus_test.o -o $(BIN) $(LDFLAGS_ALL)
+$(LIB): $(OBJECTS)
+	$(AR) $(LIB) $(OBJECTS)
+
+$(BIN): $(LIB) crunch.o corpus_gen.o corpus_test.o
+	$(CXX) $(OBJECTS) $(LIB) crunch.o corpus_gen.o corpus_test.o -o $(BIN) $(LDFLAGS_ALL)
+
 
 .PHONY: clean
 clean:
-	$(RM) $(OBJECTS) $(BIN) crunch.o corpus_gen.o corpus_test.o
+	$(RM) $(OBJECTS) $(BIN) $(LIB) crunch.o corpus_gen.o corpus_test.o
 

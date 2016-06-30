@@ -13,7 +13,7 @@ namespace crnlib
    namespace math
    {
       const float cNearlyInfinite = 1.0e+37f;
-						
+
       const float cDegToRad = 0.01745329252f;
       const float cRadToDeg = 57.29577951f;
 
@@ -56,7 +56,9 @@ namespace crnlib
 
       template<typename T> inline T square(T value) { return value * value; }
 
+#if defined(__GNUC__) && CRNLIB_64BIT_POINTERS == 0
       inline bool is_power_of_2(uint32 x) { return x && ((x & (x - 1U)) == 0U); }
+#endif
       inline bool is_power_of_2(uint64 x) { return x && ((x & (x - 1U)) == 0U); }
 
       template<typename T> inline T align_up_value(T x, uint alignment)
@@ -79,8 +81,9 @@ namespace crnlib
       {
          return align_up_value(x, alignment) - x;
       }
-		      
+
 		// From "Hackers Delight"
+#if defined(__GNUC__) && CRNLIB_64BIT_POINTERS == 0
       inline uint32 next_pow2(uint32 val)
       {
          val--;
@@ -91,6 +94,7 @@ namespace crnlib
          val |= val >> 1;
          return val + 1;
       }
+#endif
 
       inline uint64 next_pow2(uint64 val)
       {
@@ -103,7 +107,7 @@ namespace crnlib
          val |= val >> 1;
          return val + 1;
       }
-            
+
       inline uint floor_log2i(uint v)
       {
          uint l = 0;
@@ -216,7 +220,7 @@ namespace crnlib
 
       void compute_lower_pow2_dim(int& width, int& height);
       void compute_upper_pow2_dim(int& width, int& height);
-      
+
       inline bool equal_tol(float a, float b, float t)
       {
          return fabs(a - b) < ((maximum(fabs(a), fabs(b)) + 1.0f) * t);

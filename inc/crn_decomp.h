@@ -25,6 +25,13 @@
 #define CRND_BUILD_RELEASE
 #endif
 
+
+#if defined(_WIN64) || defined(__MINGW64__) || defined(_LP64) || defined(__LP64__)
+#define CRNLIB_64BIT_POINTERS 1
+#else
+#define CRNLIB_64BIT_POINTERS 0
+#endif
+
 // CRN decompression API
 namespace crnd
 {
@@ -387,7 +394,7 @@ namespace crnd
 
    const uint32 cIntBits = 32U;
 
-#if defined(_WIN64) || defined(__MINGW64__) || defined(_LP64) || defined(__LP64__)
+#if CRNLIB_64BIT_POINTERS
    typedef uint64 ptr_bits;
 #else
    typedef uint32 ptr_bits;
