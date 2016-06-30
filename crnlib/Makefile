@@ -1,5 +1,13 @@
-COMPILE_OPTIONS = -O3 -fomit-frame-pointer -ffast-math -fno-math-errno -g -fno-strict-aliasing -Wall -Wno-unused-value -Wno-unused -march=core2
-LINKER_OPTIONS = -lpthread -g
+CXX				:= clang++
+LD				:= clang++
+
+DEBUG			:= -g
+CFLAGS_ALL		:= $(CFLAGS) $(DEBUG) -O3 -Wall -Wno-unused-value -Wno-unused
+CFLAGS_ALL		+= -fomit-frame-pointer -ffast-math -fno-math-errno -fno-strict-aliasing
+CFLAGS_ALL		+= -m32
+LDFLAGS_ALL		:= $(LDFLAGS) $(DEBUG) -lpthread
+
+BIN				:= crunch
 
 OBJECTS = \
   crn_arealist.o \
@@ -80,17 +88,21 @@ OBJECTS = \
 all: crunch
 
 %.o: %.cpp
-	g++ $< -o $@ -c $(COMPILE_OPTIONS)
+	$(CXX) $< -o $@ -c $(CFLAGS_ALL)
 
 crunch.o: ../crunch/crunch.cpp
-	g++ $< -o $@ -c -I../inc -I../crnlib $(COMPILE_OPTIONS)
+	$(CXX) $< -o $@ -c -I../inc -I../crnlib $(CFLAGS_ALL)
 
 corpus_gen.o: ../crunch/corpus_gen.cpp
-	g++ $< -o $@ -c -I../inc -I../crnlib $(COMPILE_OPTIONS)
+	$(CXX) $< -o $@ -c -I../inc -I../crnlib $(CFLAGS_ALL)
 
 corpus_test.o: ../crunch/corpus_test.cpp
-	g++ $< -o $@ -c -I../inc -I../crnlib $(COMPILE_OPTIONS)
+	$(CXX) $< -o $@ -c -I../inc -I../crnlib $(CFLAGS_ALL)
 
 crunch: $(OBJECTS) crunch.o corpus_gen.o corpus_test.o
-	g++ $(OBJECTS) crunch.o corpus_gen.o corpus_test.o -o crunch $(LINKER_OPTIONS)
+	$(CXX) $(OBJECTS) crunch.o corpus_gen.o corpus_test.o -o $(BIN) $(LDFLAGS_ALL)
+
+.PHONY: clean
+clean:
+	$(RM) $(OBJECTS) $(BIN) crunch.o corpus_gen.o corpus_test.o
 

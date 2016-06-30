@@ -34,7 +34,7 @@ namespace crnlib
       crnlib_global_initializer()
       {
          crn_threading_init();
-         
+
          crnlib_enable_fail_exceptions(true);
 
          // Redirect crn_decomp.h's memory allocations into crnlib, which may be further redirected by the outside caller.
@@ -172,7 +172,7 @@ void *crn_compress(const crn_comp_params &comp_params, crn_uint32 &compressed_si
    if (pActual_bitrate) *pActual_bitrate = 0.0f;
 
    if (!comp_params.check())
-      return false;
+      return NULL;
 
    crnlib::vector<uint8> crn_file_data;
    if (!create_compressed_texture(comp_params, crn_file_data, pActual_quality_level, pActual_bitrate))
@@ -189,7 +189,7 @@ void *crn_compress(const crn_comp_params &comp_params, const crn_mipmap_params &
    if (pActual_bitrate) *pActual_bitrate = 0.0f;
 
    if ((!comp_params.check()) || (!mip_params.check()))
-      return false;
+      return NULL;
 
    crnlib::vector<uint8> crn_file_data;
    if (!create_compressed_texture(comp_params, mip_params, crn_file_data, pActual_quality_level, pActual_bitrate))
@@ -369,11 +369,11 @@ bool crn_decompress_block(const void *pSrc_block, crn_uint32 *pDst_pixels_u32, c
       case cCRNFmtDXT3:
       {
          const dxt3_block* pDXT3_block = reinterpret_cast<const dxt3_block*>(pSrc_block);
-         
+
          const dxt1_block* pDXT1_block = reinterpret_cast<const dxt1_block*>(pSrc_block) + 1;
          color_quad_u8 colors[cDXT1SelectorValues];
          pDXT1_block->get_block_colors(colors, static_cast<uint16>(pDXT1_block->get_low_color()), static_cast<uint16>(pDXT1_block->get_high_color()));
-                  
+
          for (uint i = 0; i < cDXTBlockSize * cDXTBlockSize; i++)
          {
             const uint s = pDXT1_block->get_selector(i & 3, i >> 2);
@@ -396,7 +396,7 @@ bool crn_decompress_block(const void *pSrc_block, crn_uint32 *pDst_pixels_u32, c
 
          uint values[cDXT5SelectorValues];
          dxt5_block::get_block_values(values, pDXT5_block->get_low_alpha(), pDXT5_block->get_high_alpha());
-         
+
          for (uint i = 0; i < cDXTBlockSize * cDXTBlockSize; i++)
          {
             const uint s = pDXT1_block->get_selector(i & 3, i >> 2);
@@ -432,7 +432,7 @@ bool crn_decompress_block(const void *pSrc_block, crn_uint32 *pDst_pixels_u32, c
 
          break;
       }
-      
+
       case cCRNFmtDXT5A:
       {
          const dxt5_block* pDXT5_block = reinterpret_cast<const dxt5_block*>(pSrc_block);
