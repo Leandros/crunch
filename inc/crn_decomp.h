@@ -36,7 +36,10 @@ namespace crnd
    typedef uint32             uint32;
    typedef unsigned int       uint;
    typedef signed int         int32;
-   #ifdef __GNUC__
+   #if defined(__APPLE__)
+      typedef unsigned long         uint64;
+      typedef long                  int64;
+   #elif defined(__GNUC__)
       typedef unsigned long long    uint64;
       typedef long long             int64;
    #else
@@ -317,11 +320,21 @@ namespace crnd
 #include <stdio.h>
 #ifdef WIN32
 #include <memory.h>
+#elif defined(__APPLE__)
+#include <malloc/malloc.h>
 #else
 #include <malloc.h>
 #endif
 #include <stdarg.h>
 #include <new> // needed for placement new, _msize, _expand
+
+#if !CRNLIB_USE_WIN32_API
+#if defined(__APPLE__)
+#define _msize malloc_size
+#else
+#define _msize malloc_usable_size
+#endif
+#endif
 
 #define CRND_RESTRICT __restrict
 
@@ -374,7 +387,7 @@ namespace crnd
 
    const uint32 cIntBits = 32U;
 
-#ifdef _WIN64
+#if defined(_WIN64) || defined(__MINGW64__) || defined(_LP64) || defined(__LP64__)
    typedef uint64 ptr_bits;
 #else
    typedef uint32 ptr_bits;
@@ -2420,11 +2433,7 @@ namespace crnd
 
          if (pActual_size)
          {
-#ifdef WIN32
-            *pActual_size = p_new ? ::_msize(p_new) : 0;
-#else
-            *pActual_size = p_new ? malloc_usable_size(p_new) : 0;
-#endif
+            *pActual_size = p_new ? _msize(p_new) : 0;
          }
       }
       else if (!size)
@@ -2456,11 +2465,7 @@ namespace crnd
 
          if (pActual_size)
          {
-#ifdef WIN32
-            *pActual_size = ::_msize(p_final_block);
-#else
-            *pActual_size = ::malloc_usable_size(p_final_block);
-#endif
+            *pActual_size = _msize(p_final_block);
          }
       }
 
@@ -2470,11 +2475,7 @@ namespace crnd
    static size_t crnd_default_msize(void* p, void* pUser_data)
    {
       pUser_data;
-#ifdef WIN32
       return p ? _msize(p) : 0;
-#else
-      return p ? malloc_usable_size(p) : 0;
-#endif
    }
 
    static crnd_realloc_func        g_pRealloc = crnd_default_realloc;

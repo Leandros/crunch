@@ -11,7 +11,11 @@
 #include "crn_winhdr.h"
 #endif
 
-#ifdef __GNUC__
+#if defined(__APPLE__)
+#include <fcntl.h>
+#include <sys/sysctl.h>
+#include <semaphore.h>
+#elif defined(__GNUC__)
 #include <sys/sysinfo.h>
 #endif
 
@@ -29,6 +33,14 @@ namespace crnlib
       SYSTEM_INFO g_system_info;
       GetSystemInfo(&g_system_info);
       g_number_of_processors = math::maximum<uint>(1U, g_system_info.dwNumberOfProcessors);
+#elif defined(__APPLE__)
+      int count;
+      size_t size = sizeof(count);
+      if (sysctlbyname("hw.ncpu", &count, &size, NULL, 0)) {
+        g_number_of_processors = 1;
+      } else {
+          g_number_of_processors = count;
+      }
 #elif defined(__GNUC__)
       g_number_of_processors = math::maximum<int>(1, get_nprocs());
 #else
@@ -39,7 +51,7 @@ namespace crnlib
    crn_thread_id_t crn_get_current_thread_id()
    {
       // FIXME: Not portable
-      return static_cast<crn_thread_id_t>(pthread_self());
+      return (crn_thread_id_t)(pthread_self());
    }
 
    void crn_sleep(unsigned int milliseconds)
@@ -172,10 +184,15 @@ namespace crnlib
       }
       else
       {
+#if defined(__APPLE__)
+         alarm(milliseconds / 1000);
+         status = sem_wait(&m_sem);
+#else
          struct timespec interval;
          interval.tv_sec = milliseconds / 1000;
          interval.tv_nsec = (milliseconds % 1000) * 1000000L;
          status = sem_timedwait(&m_sem, &interval);
+#endif
       }
 
       if (status)

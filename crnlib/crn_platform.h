@@ -18,7 +18,7 @@ void crnlib_fail(const char* pExp, const char* pFile, unsigned line);
 
 const bool c_crnlib_big_endian_platform = !c_crnlib_little_endian_platform;
 
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__APPLE__)
    #define crn_fopen(pDstFile, f, m) *(pDstFile) = fopen64(f, m)
    #define crn_fseek fseeko64
    #define crn_ftell ftello64
@@ -48,7 +48,7 @@ const bool c_crnlib_big_endian_platform = !c_crnlib_little_endian_platform;
    #define CRNLIB_NOINLINE __attribute__((noinline))
 #elif defined(_MSC_VER)
    #define CRNLIB_ALIGNED(x) __declspec(align(x))
-   #define CRNLIB_NOINLINE __declspec(noinline) 
+   #define CRNLIB_NOINLINE __declspec(noinline)
 #else
    #define CRNLIB_ALIGNED(x)
    #define CRNLIB_NOINLINE
