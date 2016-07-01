@@ -15,8 +15,8 @@ namespace crnlib
    /* Doesn't really matters much, due to long being equal to long long. */
    /* But is cleaner. */
    #if defined(__APPLE__)
-      typedef unsigned long         uint64;
-      typedef long                  int64;
+      typedef unsigned long long    uint64;
+      typedef long long             int64;
    #elif defined(__GNUC__)
       typedef unsigned long long    uint64;
       typedef long long             int64;
